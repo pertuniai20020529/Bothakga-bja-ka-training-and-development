@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+    <style>
+        .gallery-title {
+    text-align: center;
+    margin: 30px 0;
+    font-size: 30px;
+}
+
+/* Category buttons */
+.category-buttons {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.cat-btn {
+    padding: 10px 16px;
+    margin: 6px;
+    border: none;
+    background: #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.cat-btn.active {
+    background: #ff6b00;
+    color: white;
+}
+
+/* Masonry gallery */
+.masonry {
+    column-count: 2;
+    column-gap: 14px;
+    max-width: 1000px;
+    margin: auto;
+}
+.item {
+    width: 100%;
+    margin-bottom: 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+}
+.item img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+/* Video Thumbnail */
+.video-thumb .play-icon {
+    position: absolute;
+    top: 40%;
+    left: 45%;
+    font-size: 40px;
+    color: white;
+}
+
+/* Larger screens */
+@media(min-width: 600px) { .masonry{ column-count: 3; } }
+@media(min-width: 900px) { .masonry{ column-count: 4; } }
+
+/* Lightbox */
+.lightbox {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    top: 0; left: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+.lightbox img, 
+.lightbox video {
+    max-width: 90%;
+    max-height: 90%;
+}
+.lightbox.show { display: flex; }
+.close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 40px;
+    color: white;
+    cursor: pointer;
+}
+
+/* Slideshow nav */
+.nav {
+    position: absolute;
+    top: 50%;
+    font-size: 50px;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+}
+.prev { left: 20px; }
+.next { right: 20px; }
+
+/* Load more */
+.load-more-container {
+    text-align: center;
+    margin: 30px 0;
+}
+#loadMore {
+    padding: 10px 20px;
+    background: #ff6b00;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+    </style>
+<head>
+    <meta charset="UTF-8">
+    <title>BBK Gallery</title>
+    <link rel="stylesheet" href="gallery.css">
+</head>
+<body>
+
+<h1 class="gallery-title">Gallery</h1>
+
+<!-- FILTER BUTTONS -->
+<div class="category-buttons">
+    <button class="cat-btn active" data-category="all">All</button>
+    <button class="cat-btn" data-category="graduation">Graduation</button>
+    <button class="cat-btn" data-category="submissions">Submissions</button>
+    <button class="cat-btn" data-category="events">Events</button>
+</div>
+
+<!-- MASONRY GALLERY -->
+<div id="gallery" class="masonry">
+
+    <!-- EXAMPLE IMAGES | add your own -->
+    <img src="images/graduation2.jpg" class="item graduation">
+    <img src="images/graduation3.jpg" class="item graduation">
+    <img src="images/graduation4.jpg" class="item graduation">
+    <img src="images/graduation6.jpg" class="item graduation">
+    <img src="images/graduation7.jpg" class="item graduation">
+    <img src="images/graduation8.jpg" class="item graduation">
+    <img src="images/graduation9.jpg" class="item graduation">
+    <img src="images/graduation11.jpg" class="item graduation">
+    <img src="images/graduation10.jpg" class="item graduation">
+    <img src="images/graduation12.jpg" class="item graduation">
+    <img src="images/graduation13.jpg" class="item graduation">
+    <img src="images/graduation14.jpg" class="item graduation">
+    <img src="images/graduation15.jpg" class="item graduation">
+    <img src="images/graduation16.jpg" class="item graduation">
+    <img src="images/graduation17.jpg" class="item graduation">
+    <img src="images/graduation20.jpg" class="item graduation">
+    <img src="images/graduation21.jpg" class="item graduation">
+<img src="images/graduation22.jpg" class="item graduation">
+       <img src="images/graduation23.jpg" class="item graduation">
+        <img src="images/graduation25.jpg" class="item graduation">
+         <img src="images/graduation26.jpg" class="item graduation">
+        
+
+         <!---submissions ---->
+    <img src="images/submition1.jpg" class="item submissions">
+    <img src="images/submition2.jpg" class="item submissions">
+    <img src="images/submition3.jpg" class="item submissions">
+    <img src="images/submition4.jpg" class="item submissions">
+    <img src="images/submition6.jpg"  class="item graduation">
+    <img src="images/submition5.jpg" class="item submissions">
+    
+
+
+    <!-- VIDEO THUMBNAIL (MP4) -->
+  
+</div>
+
+<!-- LOAD MORE -->
+<div class="load-more-container">
+    <button id="loadMore">Load More</button>
+</div>
+
+<!-- LIGHTBOX POPUP -->
+<div id="lightbox" class="lightbox hidden">
+    <span class="close">&times;</span>
+
+    <!-- IMAGE -->
+    <img id="lightbox-img">
+
+    <!-- VIDEO -->
+    <video id="lightbox-video" controls></video>
+
+    <!-- SLIDESHOW NAV -->
+    <span class="nav prev">&#10094;</span>
+    <span class="nav next">&#10095;</span>
+</div>
+
+<script>
+    // ==== FILTER BUTTONS ====
+const buttons = document.querySelectorAll(".cat-btn");
+const items = document.querySelectorAll(".item");
+
+buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        let cat = btn.dataset.category;
+
+        items.forEach(item => {
+            item.style.display =
+                cat === "all" || item.classList.contains(cat)
+                ? "block"
+                : "none";
+        });
+    });
+});
+
+// ==== LOAD MORE ====
+let visible = 8;
+items.forEach((item, i) => {
+    if (i >= visible) item.style.display = "none";
+});
+
+document.getElementById("loadMore").addEventListener("click", () => {
+    visible += 6;
+
+    items.forEach((item, i) => {
+        if (i < visible) item.style.display = "block";
+    });
+});
+
+// ==== LIGHTBOX ====
+const lightbox = document.getElementById("lightbox");
+const lightImg = document.getElementById("lightbox-img");
+const lightVid = document.getElementById("lightbox-video");
+
+function openLightboxImage(src) {
+    lightVid.style.display = "none";
+    lightImg.style.display = "block";
+    lightImg.src = src;
+    lightbox.classList.add("show");
+}
+
+function openLightboxVideo(src) {
+    lightImg.style.display = "none";
+    lightVid.style.display = "block";
+    lightVid.src = src;
+    lightbox.classList.add("show");
+}
+
+// CLICK images
+document.querySelectorAll("img.item").forEach(img => {
+    img.addEventListener("click", () => openLightboxImage(img.src));
+});
+
+// CLICK video thumbnails
+document.querySelectorAll(".video-thumb").forEach(v => {
+    v.addEventListener("click", () => {
+        let videoSrc = v.dataset.video;
+        openLightboxVideo(videoSrc);
+    });
+});
+
+// CLOSE LIGHTBOX
+document.querySelector(".close").addEventListener("click", () => {
+    lightbox.classList.remove("show");
+    lightVid.pause();
+});
+
+</script>
+</body>
+</html>
+
